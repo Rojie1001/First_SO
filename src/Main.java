@@ -9,10 +9,16 @@ public class Main {
 	static int horaC;
 	static int minutoC;
 	static int segundoC;
+	
+	static int auxMinutos;
+	static int auxHoras;
+	static int auxSegundos;
 
 	static int horaA;
 	static int minutoA;
 	static int segundoA;
+
+	static boolean entrou = false;
 
 	public static int i = 0;
 
@@ -52,17 +58,42 @@ public class Main {
 				break;
 
 			case 3:
-				cronometro.start();
-
+				
+				
+				if(!cronometro.isAlive()) {
+					
+					minutoC = auxMinutos;
+					horaC = auxHoras;
+					segundoC = auxSegundos;
+					cronometro= new Thread(cr);
+					cronometro.start();
+					
+				}else {
+					cronometro.start();	
+				}
+				
+				break;
 			case 4:
-//				System.out.println("hh");
-//				cronometro.wait();
+				
+				
+				 auxMinutos = minutoC;
+				 auxHoras = horaC;
+				 auxSegundos = segundoC;
+				
+				System.out.println("HORAS: "+auxHoras);
+				System.out.println("Minutos: "+auxMinutos);
+				System.out.println("Segundos: "+auxSegundos);
+				
+				cronometro.interrupt();
 
+				
 				break;
 			case 5:
 				horaC = 0;
 				minutoC = 0;
 				segundoC = 0;
+				entrou = true;
+				cronometro.interrupt();
 
 				break;
 			case 6:
@@ -104,25 +135,25 @@ public class Main {
 
 	public static class Cronometro implements Runnable {
 		public void run() {
+			try {
+				int cont = 0;
+				while (true) {
+					for (segundoC = 0; segundoC <= 60; segundoC++) {
 
-			int cont = 0;
-			while (true) {
-				for (segundoC = 0; segundoC <= 60; segundoC++) {
-					try {
 						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+
 					}
+					minutoC++;
+					if (minutoC == 60)
+						minutoC = 0;
+					if (minutoC == 60)
+						horaC++;
 
 				}
-				minutoC++;
-				if (minutoC == 60)
-					minutoC = 0;
-				if (minutoC == 60)
-					horaC++;
 
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
 			}
-
 		}
 	}
 //	public static class Alarme implements Runnable {
