@@ -33,6 +33,7 @@ public class Main {
 		Thread cronometro = new Thread(cr);
 
 		Alarme al = new Alarme();
+		Thread alarme = new Thread(al);
 
 		while (true) {
 
@@ -63,11 +64,11 @@ public class Main {
 
 			case 3:
 
-				if (!cronometro.isAlive()) {
+				minutoC = auxMinutos;
+				horaC = auxHoras;
+				segundoC = auxSegundos;
 
-					minutoC = auxMinutos;
-					horaC = auxHoras;
-					segundoC = auxSegundos;
+				if (!cronometro.isAlive()) {
 					cronometro = new Thread(cr);
 					cronometro.start();
 
@@ -91,26 +92,28 @@ public class Main {
 				horaC = 0;
 				minutoC = 0;
 				segundoC = 0;
-				entrou = true;
+				auxHoras = 0;
+				auxMinutos = 0;
+				auxSegundos = 0;
+
 				cronometro.interrupt();
 
 				break;
 
 			case 6:
-				
-				Thread alarme = new Thread(al);
-				System.out.println("Digite a Hora" );
+
+				System.out.println("Digite a Hora");
 				horaA = teclado.nextInt();
-				System.out.println("Digite os Minutos" );
+				System.out.println("Digite os Minutos");
 				minutoA = teclado.nextInt();
-				System.out.println("Digite os Segundos" );
-				segundoA = teclado.nextInt();
-				alarme.start();
-				
-				System.out.println(false);
-				
-				
-				
+
+				if (!alarme.isAlive()) {
+					alarme = new Thread(al);
+					alarme.start();
+				} else {
+					alarme.start();
+				}
+
 				break;
 
 			default:
@@ -138,7 +141,7 @@ public class Main {
 					minuto = 0;
 					hora++;
 				}
-				if(hora == 24)
+				if (hora == 24)
 					hora = 0;
 			}
 		}
@@ -160,9 +163,9 @@ public class Main {
 					if (minutoC == 60) {
 						minutoC = 0;
 						horaC++;
-					}	
-					if(hora == 24) {
-						hora=0;
+					}
+					if (hora == 24) {
+						hora = 0;
 					}
 				}
 			} catch (InterruptedException e) {
@@ -173,31 +176,22 @@ public class Main {
 
 	public static class Alarme implements Runnable {
 		public void run() {
-			try {
-				
-				Calendar  calendar = Calendar.getInstance();
-				int horas = 0;
-				int minutos = 0;
-				int segundos = 0;
-				
-				while(true) {
-					horas = calendar.get(Calendar.HOUR);
-					minutos = calendar.get(Calendar.MINUTE);
-					segundos = calendar.get(Calendar.SECOND);
-					
-				if(horaA == horas && minutos == minutoA && segundos == segundoA) {
-					System.out.println(" ___ A ___\n ___ l ___\n ___ A ___\n ___ r ___\n ___ m ___\n ___ e ___");
-				
-					
-						Thread.currentThread().join();
-						break;
-					}
-				}
-			} catch (InterruptedException e) {
-						
-						e.printStackTrace();
+			int horas = 0;
+			int minutos = 0;
+
+			while (true) {
+
+				Calendar calendar = Calendar.getInstance();
+				horas = calendar.get(Calendar.HOUR);
+				minutos = calendar.get(Calendar.MINUTE);
+
+				if (horaA == horas && minutos == minutoA) {
+					System.out.println(" Alarme ");
+
+					Thread.currentThread().interrupt();
+					break;
 				}
 			}
 		}
 	}
-
+}
