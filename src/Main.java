@@ -1,15 +1,16 @@
+import java.util.Calendar;
 import java.util.Scanner;
 
 public class Main {
 
 	static int hora = 0;
 	static int minuto = 0;
-	static int segundos = 0;
+	static int segundo = 0;
 
 	static int horaC;
 	static int minutoC;
 	static int segundoC;
-	
+
 	static int auxMinutos;
 	static int auxHoras;
 	static int auxSegundos;
@@ -31,6 +32,8 @@ public class Main {
 		Cronometro cr = new Cronometro();
 		Thread cronometro = new Thread(cr);
 
+		Alarme al = new Alarme();
+
 		while (true) {
 
 			System.out.println("(1)Ajustar horário");
@@ -49,46 +52,42 @@ public class Main {
 				System.out.println("Digite a Hora");
 				hora = teclado.nextInt();
 				minuto = teclado.nextInt();
-				segundos = teclado.nextInt();
+				segundo = teclado.nextInt();
 
 				break;
+
 			case 2:
-				System.out.println("Hora Atual " + hora + ":" + minuto + ":" + segundos);
+				System.out.println("Hora Atual " + hora + ":" + minuto + ":" + segundo);
 
 				break;
 
 			case 3:
-				
-				
-				if(!cronometro.isAlive()) {
-					
+
+				if (!cronometro.isAlive()) {
+
 					minutoC = auxMinutos;
 					horaC = auxHoras;
 					segundoC = auxSegundos;
-					cronometro= new Thread(cr);
+					cronometro = new Thread(cr);
 					cronometro.start();
-					
-				}else {
-					cronometro.start();	
+
+				} else {
+					cronometro.start();
 				}
-				
+
 				break;
 			case 4:
-				
-				
-				 auxMinutos = minutoC;
-				 auxHoras = horaC;
-				 auxSegundos = segundoC;
-				
-				System.out.println("HORAS: "+auxHoras);
-				System.out.println("Minutos: "+auxMinutos);
-				System.out.println("Segundos: "+auxSegundos);
-				
+
+				auxMinutos = minutoC;
+				auxHoras = horaC;
+				auxSegundos = segundoC;
+
+				System.out.println(auxHoras + ":" + auxMinutos + ":" + auxSegundos);
 				cronometro.interrupt();
 
-				
 				break;
 			case 5:
+
 				horaC = 0;
 				minutoC = 0;
 				segundoC = 0;
@@ -96,8 +95,22 @@ public class Main {
 				cronometro.interrupt();
 
 				break;
+
 			case 6:
-				System.out.println(horaC + ":" + minutoC + ":" + segundoC);
+				
+				Thread alarme = new Thread(al);
+				System.out.println("Digite a Hora" );
+				horaA = teclado.nextInt();
+				System.out.println("Digite os Minutos" );
+				minutoA = teclado.nextInt();
+				System.out.println("Digite os Segundos" );
+				segundoA = teclado.nextInt();
+				alarme.start();
+				
+				System.out.println(false);
+				
+				
+				
 				break;
 
 			default:
@@ -112,24 +125,22 @@ public class Main {
 	public static class Relogio implements Runnable {
 		public void run() {
 
-			int cont = 0;
 			while (true) {
-				for (segundos = 0; segundos <= 60; segundos++) {
+				for (segundo = 0; segundo < 60; segundo++) {
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-
 				}
 				minuto++;
-				if (minuto == 60)
+				if (minuto == 60) {
 					minuto = 0;
-				if (minuto == 60)
 					hora++;
-
+				}
+				if(hora == 24)
+					hora = 0;
 			}
-
 		}
 	}
 
@@ -138,29 +149,55 @@ public class Main {
 			try {
 				int cont = 0;
 				while (true) {
-					for (segundoC = 0; segundoC <= 60; segundoC++) {
+					for (cont = 0; cont < 60; cont++) {
 
 						Thread.sleep(1000);
-
+						segundoC++;
 					}
+
+					segundoC = 0;
 					minutoC++;
-					if (minutoC == 60)
+					if (minutoC == 60) {
 						minutoC = 0;
-					if (minutoC == 60)
 						horaC++;
-
+					}	
+					if(hora == 24) {
+						hora=0;
+					}
 				}
-
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
 			}
 		}
 	}
-//	public static class Alarme implements Runnable {
-//		public void run() {
-//		while
-//
-//		}
-//	}
 
-}
+	public static class Alarme implements Runnable {
+		public void run() {
+			try {
+				
+				Calendar  calendar = Calendar.getInstance();
+				int horas = 0;
+				int minutos = 0;
+				int segundos = 0;
+				
+				while(true) {
+					horas = calendar.get(Calendar.HOUR);
+					minutos = calendar.get(Calendar.MINUTE);
+					segundos = calendar.get(Calendar.SECOND);
+					
+				if(horaA == horas && minutos == minutoA && segundos == segundoA) {
+					System.out.println(" ___ A ___\n ___ l ___\n ___ A ___\n ___ r ___\n ___ m ___\n ___ e ___");
+				
+					
+						Thread.currentThread().join();
+						break;
+					}
+				}
+			} catch (InterruptedException e) {
+						
+						e.printStackTrace();
+				}
+			}
+		}
+	}
+
