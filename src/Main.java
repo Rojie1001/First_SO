@@ -176,20 +176,23 @@ public class Main {
 
 	public static class Alarme implements Runnable {
 		public void run() {
-			int horas = 0;
-			int minutos = 0;
+
 
 			while (true) {
 
-				Calendar calendar = Calendar.getInstance();
-				horas = calendar.get(Calendar.HOUR);
-				minutos = calendar.get(Calendar.MINUTE);
 
-				if (horaA == horas && minutos == minutoA) {
+
+				if (horaA == hora && minuto == minutoA) {
 					System.out.println(" Alarme ");
 
 					Thread.currentThread().interrupt();
 					break;
+				}
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		}
